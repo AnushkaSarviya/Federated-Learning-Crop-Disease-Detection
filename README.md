@@ -23,7 +23,9 @@
 ## 📌 Table of Contents
 
 - [Project Overview](#-project-overview)
+- [Research Highlights](#Research-Highlights)
 - [Why This Matters](#-why-this-matters)
+- [Key Learnings](#-Key-Learnings)
 - [Features](#-features)
 - [Project Architecture](#-project-architecture)
 - [Repository Structure](#-repository-structure)
@@ -32,7 +34,6 @@
 - [Federated Learning Algorithms](#-federated-learning-algorithms)
 - [Training Configuration](#-training-configuration)
 - [Results](#-results)
-- [Future Improvements](#-future-improvements)
 - [Setup & Installation](#-setup--installation)
 - [References](#-references)
 - [License](#-license)
@@ -51,6 +52,13 @@ This project addresses both problems by applying **Federated Learning (FL)** —
 Using the **PlantVillage** dataset and a fine-tuned **ResNet50** backbone, this research benchmarks three federated optimization algorithms — **FedAvg**, **FedAdam**, and **FedProx** — to identify the most effective strategy for decentralized crop disease classification.
 
 ---
+## ⭐ Research Highlights
+
+- Privacy-preserving crop disease detection using Federated Learning.
+- Compared FedAvg, FedAdam, and FedProx under decentralized training.
+- Transfer Learning with ResNet-50.
+- Comprehensive technical report documenting methodology and experiments.
+- Developed during a research internship at MANIT Bhopal under the ISEA Phase-III Project.
 
 ## 🌱 Why This Matters
 
@@ -63,7 +71,18 @@ Using the **PlantVillage** dataset and a fine-tuned **ResNet50** backbone, this 
 | **Data Heterogeneity** | Assumes i.i.d. data | Handles non-i.i.d. real-world distributions |
 
 ---
+## 📖 Key Learnings
 
+During this project I gained practical experience in:
+
+- Federated Learning
+- Deep Learning
+- Transfer Learning
+- CNN Architecture
+- Distributed Machine Learning
+- Model Aggregation
+- TensorFlow/Keras
+- Research Documentation
 ## ✅ Features
 
 - ✅ **Federated Learning** — Fully distributed training without raw data sharing
@@ -97,18 +116,7 @@ flowchart TD
     G -- Yes --> H[✅ Final Global Model\nDeployed for Inference]
 ```
 
-### Client-Side Training Loop
 
-```mermaid
-flowchart LR
-    A[Receive Global Weights] --> B[Load Local Dataset\nPlantVillage Subset]
-    B --> C[Preprocess & Augment\nImages 224×224]
-    C --> D[ResNet50 Feature\nExtraction]
-    D --> E[Fine-tune Dense\nClassification Head]
-    E --> F[Compute Local Gradients\nvia Backpropagation]
-    F --> G[Apply Local Optimizer\ne.g. SGD / Adam]
-    G --> H[Send Weight Delta\nto Server]
-```
 
 ### Model Architecture
 
@@ -315,23 +323,7 @@ Class distribution across PlantVillage categories.
 
 ---
 
-## 🚀 Future Improvements
 
-The following directions extend this work toward production-grade federated agricultural AI:
-
-| Improvement | Description | Priority |
-|-------------|-------------|----------|
-| 🔐 **Secure Aggregation** | Cryptographic protocols (e.g., SecAgg) to protect client updates from the server | High |
-| 🔏 **Differential Privacy** | Add calibrated noise (DP-SGD) to guarantee formal privacy guarantees | High |
-| 🔄 **FedBN** | Federated batch normalization to handle feature shift across clients | Medium |
-| 🌸 **Flower Framework** | Migrate to the [Flower (flwr)](https://flower.ai/) framework for production-ready FL | Medium |
-| 📱 **Mobile Deployment** | Export model via TFLite for Android/iOS farmer apps | High |
-| 🔌 **Edge Deployment** | Deploy on Raspberry Pi / NVIDIA Jetson for on-farm inference | Medium |
-| 🌐 **Real Data Collection** | Partner with agricultural organizations for authentic, non-simulated federated data | Long-term |
-| 🔬 **EfficientNet / ViT** | Benchmark against EfficientNetV2 or Vision Transformer backbones | Medium |
-| 📡 **Asynchronous FL** | Implement async aggregation to handle stragglers and intermittent connectivity | Medium |
-
----
 
 ## 💻 Setup & Installation
 
