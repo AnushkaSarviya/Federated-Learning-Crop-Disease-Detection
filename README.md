@@ -2,19 +2,18 @@
 
 # 🌿 Federated Learning for Crop Disease Detection
 
-### Privacy-Preserving Agricultural AI Using Federated Learning on the PlantVillage Dataset
+### Privacy-Preserving Agricultural AI Using Decoupled Optimization and Deep Residual Networks
 
-[![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![TensorFlow](https://img.shields.io/badge/TensorFlow-2.13%2B-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)](https://www.tensorflow.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22c55e?style=for-the-badge)](LICENSE)
 [![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-F37626?style=for-the-badge&logo=jupyter&logoColor=white)](notebooks/Crop_Disease_FL.ipynb)
-[![Institution](https://img.shields.io/badge/Institution-MANIT%20Bhopal-1d4ed8?style=for-the-badge)](https://www.manit.ac.in/)
 [![Status](https://img.shields.io/badge/Status-Research%20Complete-22c55e?style=for-the-badge)]()
 
 <br/>
 
 > **Research Internship Project** — Maulana Azad National Institute of Technology (MANIT), Bhopal  
-> Applying Federated Learning to enable privacy-preserving, decentralized crop disease diagnosis across distributed agricultural devices.
+> Benchmarking simulated Federated Learning to enable privacy-preserving, decentralized plant disease classification across distributed agricultural edge devices.
 
 </div>
 
@@ -23,17 +22,19 @@
 ## 📌 Table of Contents
 
 - [Project Overview](#-project-overview)
-- [Why This Matters](#-why-this-matters)
-- [Features](#-features)
-- [Project Architecture](#-project-architecture)
-- [Repository Structure](#-repository-structure)
-- [Dataset](#-dataset)
+- [Project Highlights](#-project-highlights)
+- [Problem Statement](#-problem-statement)
+- [Dataset Details](#-dataset-details)
 - [Model Architecture](#-model-architecture)
 - [Federated Learning Algorithms](#-federated-learning-algorithms)
-- [Training Configuration](#-training-configuration)
-- [Results](#-results)
-- [Future Improvements](#-future-improvements)
-- [Setup & Installation](#-setup--installation)
+- [Training & Simulation Configuration](#-training--simulation-configuration)
+- [Experimental Results](#-experimental-results)
+- [Visual Results](#-visual-results)
+- [Repository Structure](#-repository-structure)
+- [Setup & Run Instructions](#-setup--run-instructions)
+- [Research Report](#-research-report)
+- [Limitations & Technical Debt](#-limitations--technical-debt)
+- [Future Work](#-future-work)
 - [References](#-references)
 - [License](#-license)
 
@@ -41,89 +42,265 @@
 
 ## 🔍 Project Overview
 
-Modern agriculture faces an enormous challenge: **crop diseases destroy an estimated 20–40% of global food production every year**, costing farmers billions. Early, accurate detection is critical — but deploying AI models for disease detection in rural settings raises two key problems:
+This project explores **Federated Learning (FL)** as a privacy-preserving solution for plant disease classification in smart agriculture. Traditional centralized machine learning requires uploading raw visual farm data to cloud servers, introducing severe concerns regarding data sovereignty, latency, and connectivity. 
 
-1. **Data Privacy**: Farmers and agricultural organizations are often unwilling to share sensitive farm data with a central server.
-2. **Connectivity**: Remote agricultural regions may have limited or intermittent internet access, making centralized training impractical.
-
-This project addresses both problems by applying **Federated Learning (FL)** — a distributed machine learning paradigm where the model is trained *locally* on each device, and only model updates (gradients/weights) are shared with a central server. Raw data never leaves the device.
-
-Using the **PlantVillage** dataset and a fine-tuned **ResNet50** backbone, this research benchmarks three federated optimization algorithms — **FedAvg**, **FedAdam**, and **FedProx** — to identify the most effective strategy for decentralized crop disease classification.
+This project simulates a decentralized training environment using a fine-tuned **ResNet-50** backbone pre-trained on ImageNet. It compares local centralized training against simulated **Federated Averaging (FedAvg)** on a partition of the **PlantVillage** dataset. By evaluating performance across multiple crops (Peach, Bell Pepper, Strawberry, and Apple), the project highlights how data heterogeneity (non-IID data) affects model generalization at the edge.
 
 ---
 
-## 🌱 Why This Matters
+## 🚀 Project Highlights
 
-| Challenge | Traditional Centralized AI | Federated Learning Approach |
-|-----------|---------------------------|------------------------------|
-| **Data Privacy** | Raw data sent to server | Data never leaves device |
-| **Communication Cost** | Full dataset transfer | Only model updates shared |
-| **Scalability** | Single point of failure | Distributed across edge nodes |
-| **Rural Deployment** | Requires stable internet | Works with intermittent connectivity |
-| **Data Heterogeneity** | Assumes i.i.d. data | Handles non-i.i.d. real-world distributions |
+*   **ResNet-50 Transfer Learning**: Employs an ImageNet pre-trained ResNet-50 backbone with a custom multi-layer classification head, achieving high training efficiency on small crop subsets.
+*   **Simulated Edge Training**: Simulates client-side training partitions across simulated edge environments (1 to 3 clients) with customizable local epochs.
+*   **Non-IID Simulation**: Models client data distributions on crop-specific segments of the PlantVillage dataset, representing real-world heterogeneous farming settings.
+*   **Zero Raw Data Sharing**: Restricts server communication entirely to weight/gradient update vectors, ensuring raw image data remains local to simulated farm nodes.
+*   **Detailed Metrics**: Evaluates performance using standard classification reports (Precision, Recall, F1-Score) and confusion matrices across 4 trained crops.
 
 ---
 
-## ✅ Features
+## 🏗️ Problem Statement
 
-- ✅ **Federated Learning** — Fully distributed training without raw data sharing
-- ✅ **FedAvg** — Canonical federated averaging aggregation algorithm
-- ✅ **FedAdam** — Adaptive momentum-based federated optimizer
-- ✅ **FedProx** — Proximal regularization for non-i.i.d. data robustness
-- ✅ **ResNet50** — Deep residual network with ImageNet pre-trained weights
-- ✅ **Transfer Learning** — Fine-tuned backbone for domain-specific disease features
-- ✅ **Privacy-Preserving Training** — Zero raw data transmission to central server
-- ✅ **PlantVillage Dataset** — Industry-standard benchmark for plant pathology
-- ✅ **TensorFlow / Keras** — Production-grade deep learning framework
-- ✅ **Algorithm Comparison** — Systematic benchmarking across FL strategies
+Centralized deep learning models require uploading massive image datasets to a centralized server. In the agricultural sector, this faces two fundamental bottlenecks:
 
----
+1.  **Data Sovereignty & Trust**: Farmers and agricultural institutions are reluctant to disclose sensitive location-specific disease details, pesticide history, or yield markers.
+2.  **Bandwidth Constraints**: Rural farming edges are frequently characterized by limited or high-cost internet access, rendering central uploads of high-resolution leaf directories impractical.
 
-## 🏗️ Project Architecture
-
-### High-Level Federated Learning Pipeline
+**Federated Learning** decouples local model training from global model updates. The global server broadcasts model parameters, clients execute local training steps on private on-device data, and the server aggregates only the model weight differences, creating a robust global model without exposing local data.
 
 ```mermaid
 flowchart TD
-    A[🌍 Central Server\nInitializes Global Model] --> B[📡 Broadcast Global Weights\nto Selected Clients]
+    A[🌍 Global Central Server\nInitializes ResNet-50 Model] --> B[📡 Broadcast Global Weights\nto Selected Clients]
     B --> C1[🚜 Client 1 — Farm A\nLocal Training on Local Data]
     B --> C2[🚜 Client 2 — Farm B\nLocal Training on Local Data]
     B --> C3[🚜 Client N — Farm N\nLocal Training on Local Data]
-    C1 --> D[📤 Upload Model Updates\nWeights Only — No Raw Data]
+    C1 --> D[📤 Upload Model Weights\nNo Raw Leaf Images Shared]
     C2 --> D
     C3 --> D
-    D --> E{🔗 Server Aggregation\nFedAvg / FedAdam / FedProx}
+    D --> E{🔗 Server Weight Aggregation\nFedAvg Aggregator}
     E --> F[🧠 Updated Global Model]
     F --> G{Convergence\nReached?}
     G -- No --> B
     G -- Yes --> H[✅ Final Global Model\nDeployed for Inference]
 ```
 
-### Client-Side Training Loop
+---
 
-```mermaid
-flowchart LR
-    A[Receive Global Weights] --> B[Load Local Dataset\nPlantVillage Subset]
-    B --> C[Preprocess & Augment\nImages 224×224]
-    C --> D[ResNet50 Feature\nExtraction]
-    D --> E[Fine-tune Dense\nClassification Head]
-    E --> F[Compute Local Gradients\nvia Backpropagation]
-    F --> G[Apply Local Optimizer\ne.g. SGD / Adam]
-    G --> H[Send Weight Delta\nto Server]
+## 📊 Dataset Details
+
+The project utilizes the **[PlantVillage Dataset](https://www.kaggle.com/datasets/emmarex/plantdisease)**, an open-access repository of plant health images.
+
+### Source vs. Experimental Dataset Partition
+*   **Full PlantVillage Dataset**: Contains **54,305 images** across 38 classes (14 crop species).
+*   **Experimental Partition**: To facilitate efficient simulated training in the notebook, a subset of the dataset was extracted. The simulated training runs use **40 to 51 files per class** across selected crops, yielding a lightweight prototype environment:
+
+| Crop | Class Name | Simulated Training Samples |
+|---|---|---|
+| **Peach** | Bacterial Spot, Healthy | 93 images (44 / 49 split) |
+| **Bell Pepper** | Bacterial Spot, Healthy | 98 images (48 / 50 split) |
+| **Strawberry** | Healthy, Leaf Scorch | 91 images (46 / 45 split) |
+| **Apple** | Apple Scab, Black Rot, Cedar Apple Rust, Healthy | 196 images (51 / 50 / 44 / 51 split) |
+| **Tomato** * | Bacterial Spot, Early Blight, Late Blight, Septoria Leaf Spot, Yellow Leaf Curl Virus, Healthy | 279 images (43 / 48 / 47 / 44 / 49 / 48 split) |
+| **Corn** * | Cercospora Leaf Spot, Common Rust, Northern Leaf Blight, Healthy | 184 images (41 / 48 / 48 / 47 split) |
+
+> [!NOTE]
+> * **Tomato** and **Corn** are included in the dataset directories. However, only **Peach**, **Bell Pepper**, **Strawberry**, and **Apple** are trained and evaluated in the Jupyter Notebook runs. Tomato metrics listed in the results are extracted from the research report and were not re-run in the provided notebook.
+
+### Data Split & Preprocessing
+*   **Split Ratio**: The dataset is pre-divided into **Train**, **Val** (Validation), and **Test** sets (80:10:10 ratio).
+*   **Resolution**: Input images are resized to **224 × 224 × 3** pixels.
+*   **Augmentation**: Training generators apply random flips, rotation (20°), shear (0.15), and pixel scaling (rescale to `1/255.`).
+
+---
+
+## 🧠 Model Architecture
+
+The classifier uses **ResNet-50** loaded with pre-trained **ImageNet** weights as its feature extractor. The convolutional base is frozen to preserve low-level visual weights, and a classification head is appended for domain-specific fine-tuning.
+
+```
+Input Image (224 × 224 × 3)
+    └── ResNet-50 Convolutional Base (Frozen, ImageNet Weights)
+    └── Global Average Pooling
+    └── Dense Layer (128 units, ReLU activation)
+    └── Dropout Layer (50% dropout rate)
+    └── Output Dense Layer (N Classes, Softmax activation)
 ```
 
-### Model Architecture
+*   **Loss Function**: Categorical Cross-Entropy.
+*   **Client Optimizer**: Adam with a learning rate of $1 \times 10^{-4}$ (fine-tuning).
 
-```mermaid
-flowchart TD
-    A[Input Image\n224 × 224 × 3] --> B[ResNet50 Backbone\nImageNet Pre-trained\nFrozen Base Layers]
-    B --> C[Global Average Pooling]
-    C --> D[Dense Layer — 512 units\nReLU Activation]
-    D --> E[Dropout — 0.5]
-    E --> F[Dense Layer — 256 units\nReLU Activation]
-    F --> G[Dropout — 0.3]
-    G --> H[Output Layer\nN Classes\nSoftmax Activation]
-```
+---
+
+## ⚙️ Federated Learning Setup
+
+*   **Client Representation**: Clients are simulated locally by slicing the dataset generators.
+*   **Data Partitioning**: The training set is split among $K$ simulated clients by dividing the generator file array:
+    $$\text{Samples per Client} = \frac{\text{Total Train Samples}}{K}$$
+*   **Local Epochs ($E$)**: The client trains for $E$ epochs on its private partition before uploading weights to the central server.
+*   **Global Communication Rounds ($R$)**: The global process runs for $R$ rounds. At the end of each round, client weight matrices are aggregated at the server.
+
+---
+
+## 🧪 Federated Algorithms
+
+The repository references three optimization strategies:
+
+### 1. FedAvg (Federated Averaging) - *Implemented & Executed*
+The canonical algorithm where local client models are updated via SGD, and weight parameters are averaged on the server:
+$$w^{t+1} = \sum_{k=1}^{K} \frac{n_k}{n} w_k^{t+1}$$
+This is the only algorithm executed in the training runs in `notebooks/Crop_Disease_FL.ipynb`.
+
+### 2. FedAdam - *Defined but Not Executed*
+An adaptive momentum-based server optimizer. The code defines the aggregator in Cell 102 (`fed_adam_aggregate` utilizing moving moments $m$ and $v$ with hyperparameters $\beta_1=0.9, \beta_2=0.99$), but it is not called during notebook execution loops.
+
+### 3. FedProx - *Methodology Only*
+A proximal regularization algorithm adding a penalty term to limit local updates from drifting from the global weights:
+$$\min_{w} h_k(w) = F_k(w) + \frac{\mu}{2} \|w - w^t\|^2$$
+Although discussed in the research report, FedProx is not implemented in the provided code.
+
+---
+
+## 🛠️ Training & Simulation Configuration
+
+| Parameter | Report Target Value | Notebook Executed Value |
+|---|---|---|
+| **Backbone Network** | ResNet-50 (Pre-trained) | ResNet-50 (Pre-trained) |
+| **Input Image Dimensions** | 224 × 224 × 3 | 224 × 224 × 3 |
+| **Simulated Clients ($K$)** | 3 to 6 | 1 to 3 |
+| **Client Batch Size ($B$)** | 32 | 64 |
+| **Local Epochs ($E$)** | 5 | 2 to 6 |
+| **Global Communication Rounds ($R$)** | 50 | 2 to 3 |
+| **Client Learning Rate ($\eta$)** | $3 \times 10^{-4}$ | $1 \times 10^{-4}$ |
+| **Federated Optimizer** | FedAvg / FedProx / FedAdam | FedAvg (only) |
+| **DP Regularization ($\sigma$)** | 0.5 (Gaussian) | Not Implemented |
+| **Validation / Test Split** | 10% / 10% | 10% / 10% (Pre-partitioned folders) |
+
+---
+
+## 📈 Experimental Results
+
+The classification performance metrics compiled from the final test set evaluations are summarized below. The results show the trade-off between classification complexity (class count) and target performance.
+
+| Crop | Classes | Verified Accuracy | Precision (Macro) | Recall (Macro) | F1-Score (Macro) |
+|---|:---:|:---:|:---:|:---:|:---:|
+| **Peach** | 2 | **93.00%** | 0.94 | 0.93 | 0.93 |
+| **Bell Pepper** | 2 | **72.00%** | 0.73 | 0.72 | 0.72 |
+| **Strawberry** | 2 | **70.00%** | 0.76 | 0.71 | 0.69 |
+| **Apple** | 4 | **47.00%** | 0.44 | 0.47 | 0.43 |
+| **Tomato** * | 6 | **97.00%** | 0.97 | 0.97 | 0.97 |
+
+> [!WARNING]
+> \* **Tomato** results are extracted from the research report text. They were not actively evaluated or generated during execution of the provided Jupyter Notebook.
+> 
+> Apple and Strawberry show lower accuracies due to high class imbalance, visual similarity of symptoms (e.g. Apple Scab vs. Black Rot, Strawberry Leaf Scorch vs. healthy leaf patterns), and the restricted size of the training subset.
+
+---
+
+## 🖼️ Visual Results
+
+### 1. Dataset & Crop Distributions
+The following charts display the original data distribution across the crop categories and corresponding disease sub-classes used in the research project.
+
+<div align="center">
+  <table style="width: 100%; border: none;">
+    <tr>
+      <td style="width: 50%; text-align: center; border: none;">
+        <strong>Vegetable & Crop Image Counts (Fig. 12)</strong><br/>
+        <img src="images/dataset_distribution.png" width="90%" alt="Crop distribution count chart"/>
+      </td>
+      <td style="width: 50%; text-align: center; border: none;">
+        <strong>Disease Class Multiplicity (Fig. 13)</strong><br/>
+        <img src="images/diseases_per_crop.png" width="90%" alt="Disease classes chart"/>
+      </td>
+    </tr>
+  </table>
+</div>
+
+---
+
+### 2. Model Performance Curves & Confusion Matrices
+Below are the training history curves (Accuracy & Loss) alongside the resulting test set confusion matrices, mapping actual classifications against predictions.
+
+````carousel
+=== Tomato Performance ===
+<div align="center">
+  <table style="width: 100%; border: none;">
+    <tr>
+      <td style="width: 50%; text-align: center; border: none;">
+        <strong>Accuracy & Loss (Fig. 15)</strong><br/>
+        <img src="images/tomato_accuracy_curve.png" width="90%" alt="Tomato curves"/>
+      </td>
+      <td style="width: 50%; text-align: center; border: none;">
+        <strong>Confusion Matrix (Fig. 15.1)</strong><br/>
+        <img src="images/tomato_confusion_matrix.png" width="90%" alt="Tomato matrix"/>
+      </td>
+    </tr>
+  </table>
+</div>
+<!-- slide -->
+=== Peach Performance ===
+<div align="center">
+  <table style="width: 100%; border: none;">
+    <tr>
+      <td style="width: 50%; text-align: center; border: none;">
+        <strong>Accuracy & Loss (Fig. 16)</strong><br/>
+        <img src="images/peach_accuracy_curve.png" width="90%" alt="Peach curves"/>
+      </td>
+      <td style="width: 50%; text-align: center; border: none;">
+        <strong>Confusion Matrix (Fig. 16.1)</strong><br/>
+        <img src="images/peach_confusion_matrix.png" width="90%" alt="Peach matrix"/>
+      </td>
+    </tr>
+  </table>
+</div>
+<!-- slide -->
+=== Bell Pepper Performance ===
+<div align="center">
+  <table style="width: 100%; border: none;">
+    <tr>
+      <td style="width: 50%; text-align: center; border: none;">
+        <strong>Accuracy & Loss (Fig. 17)</strong><br/>
+        <img src="images/bell_pepper_accuracy_curve.png" width="90%" alt="Bell Pepper curves"/>
+      </td>
+      <td style="width: 50%; text-align: center; border: none;">
+        <strong>Confusion Matrix (Fig. 17.1)</strong><br/>
+        <img src="images/bell_pepper_confusion_matrix.png" width="90%" alt="Bell Pepper matrix"/>
+      </td>
+    </tr>
+  </table>
+</div>
+<!-- slide -->
+=== Strawberry Performance ===
+<div align="center">
+  <table style="width: 100%; border: none;">
+    <tr>
+      <td style="width: 50%; text-align: center; border: none;">
+        <strong>Accuracy & Loss (Fig. 18)</strong><br/>
+        <img src="images/strawberry_accuracy_curve.png" width="90%" alt="Strawberry curves"/>
+      </td>
+      <td style="width: 50%; text-align: center; border: none;">
+        <strong>Confusion Matrix (Fig. 18.1)</strong><br/>
+        <img src="images/strawberry_confusion_matrix.png" width="90%" alt="Strawberry matrix"/>
+      </td>
+    </tr>
+  </table>
+</div>
+<!-- slide -->
+=== Apple Performance ===
+<div align="center">
+  <table style="width: 100%; border: none;">
+    <tr>
+      <td style="width: 50%; text-align: center; border: none;">
+        <strong>Accuracy & Loss (Fig. 19)</strong><br/>
+        <img src="images/apple_accuracy_curve.png" width="90%" alt="Apple curves"/>
+      </td>
+      <td style="width: 50%; text-align: center; border: none;">
+        <strong>Confusion Matrix (Fig. 19.1)</strong><br/>
+        <img src="images/apple_confusion_matrix.png" width="90%" alt="Apple matrix"/>
+      </td>
+    </tr>
+  </table>
+</div>
+````
 
 ---
 
@@ -133,288 +310,108 @@ flowchart TD
 Federated-Learning-Crop-Disease-Detection/
 │
 ├── 📓 notebooks/
-│     └── Crop_Disease_FL.ipynb       # Main experiment notebook
+│     └── Crop_Disease_FL.ipynb          # Jupyter notebook containing training and FL simulations
 │
 ├── 🖼️ images/
-│     ├── architecture.png            # System architecture diagram
-│     ├── pipeline.png                # FL training pipeline
-│     ├── accuracy.png                # Training & validation accuracy curves
-│     ├── confusion_matrix.png        # Per-class confusion matrix
-│     └── dataset_distribution.png   # Class distribution visualization
+│     ├── resnet50_architecture.png       # ResNet-50 base + dense head diagram
+│     ├── dataset_distribution.png       # Crop sample frequencies (Fig. 12)
+│     ├── diseases_per_crop.png          # Number of disease classes per plant (Fig. 13)
+│     ├── tomato_accuracy_curve.png      # Tomato validation accuracy/loss curve
+│     ├── tomato_confusion_matrix.png    # Tomato test confusion matrix
+│     ├── peach_accuracy_curve.png       # Peach validation accuracy/loss curve
+│     ├── peach_confusion_matrix.png      # Peach test confusion matrix
+│     ├── bell_pepper_accuracy_curve.png # Bell Pepper validation accuracy/loss curve
+│     ├── bell_pepper_confusion_matrix.png# Bell Pepper test confusion matrix
+│     ├── strawberry_accuracy_curve.png  # Strawberry validation accuracy/loss curve
+│     ├── strawberry_confusion_matrix.png# Strawberry test confusion matrix
+│     ├── apple_accuracy_curve.png       # Apple validation accuracy/loss curve
+│     └── apple_confusion_matrix.png     # Apple test confusion matrix
 │
 ├── 📄 Report/
-│     └── Federated_Learning_Report.pdf   # Full internship research report
+│     └── Federated_Learning_Report.pdf  # Full internship research report (PDF)
 │
-├── 📋 requirements.txt              # Python dependencies
-├── 📜 LICENSE                       # MIT License
-├── 🙈 .gitignore                    # Python + Jupyter gitignore
-└── 📖 README.md                     # This file
+├── 📋 requirements.txt                  # Python package requirements
+├── 📜 LICENSE                           # MIT License
+├── 🙈 .gitignore                        # Python & Jupyter gitignore rules
+└── 📖 README.md                         # Project documentation (this file)
 ```
 
 ---
 
-## 📊 Dataset
-
-This project uses the **[PlantVillage Dataset](https://www.kaggle.com/datasets/emmarex/plantdisease)** — one of the most widely used benchmarks in agricultural AI research.
-
-### Dataset Overview
-
-| Property | Detail |
-|----------|--------|
-| **Source** | PlantVillage (Penn State University) |
-| **Total Images** | 54,305 images |
-| **Number of Crops** | 14 crop species |
-| **Number of Classes** | 38 (healthy + disease variants) |
-| **Image Format** | JPEG, RGB |
-| **Image Resolution** | Resized to 224 × 224 |
-
-### Split Strategy
-
-| Split | Proportion | Purpose |
-|-------|-----------|---------|
-| Training | 70% | Local federated client training |
-| Validation | 15% | Hyperparameter tuning & monitoring |
-| Test | 15% | Final model evaluation |
-
-### Federated Data Distribution
-
-The dataset was partitioned across simulated clients to mimic **non-i.i.d. (non-independently and identically distributed)** conditions, reflecting real-world scenarios where individual farms grow different crops and encounter different diseases.
-
-> 📌 **Note:** The PlantVillage dataset is publicly available. It is **not** included in this repository. Download instructions are provided in the notebook.
-
----
-
-## 🧠 Model Architecture
-
-### ResNet50 with Transfer Learning
-
-The backbone of the classification model is **ResNet50** — a 50-layer deep residual network pre-trained on the **ImageNet** dataset (1.2M images, 1000 classes). Transfer learning allows the model to leverage rich visual feature representations learned on a large generic dataset and fine-tune them for the specialized domain of plant disease detection.
-
-```
-ResNet50 (Pre-trained, ImageNet)
-    └── Frozen Base Layers (Convolutional Feature Extractor)
-    └── Global Average Pooling
-    └── Dense (512, ReLU)
-    └── Dropout (0.5)
-    └── Dense (256, ReLU)
-    └── Dropout (0.3)
-    └── Dense (N Classes, Softmax)
-```
-
-**Why ResNet50?**
-- Residual connections prevent vanishing gradients in deep networks
-- Pre-trained features transfer well to plant texture and color patterns
-- Computationally efficient relative to deeper variants (ResNet101, ResNet152)
-- Widely validated in plant pathology literature
-
----
-
-## ⚙️ Federated Learning Algorithms
-
-Three federated optimization strategies were implemented and compared:
-
-| Algorithm | Core Idea | Strengths | Limitations |
-|-----------|-----------|-----------|-------------|
-| **FedAvg** | Weighted average of local model weights | Simple, communication-efficient, strong baseline | Struggles with highly non-i.i.d. data |
-| **FedAdam** | Server-side Adam optimizer on aggregated updates | Faster convergence, adaptive learning rate | Requires tuning of β₁, β₂, ε |
-| **FedProx** | Adds proximal term `μ/2 ‖w − wᵍ‖²` to local loss | Robust to non-i.i.d. data and partial participation | Additional μ hyperparameter to tune |
-
-### Algorithm Details
-
-#### FedAvg (McMahan et al., 2017)
-The canonical federated learning algorithm. Each client runs `E` local epochs on its private data, then the server aggregates client weights as a weighted average proportional to dataset size.
-
-```
-wᵍ⁺¹ = Σₖ (nₖ / n) · wₖ
-```
-
-#### FedAdam (Reddi et al., 2020)
-Introduces server-side adaptive optimization. The server applies an Adam-style update to the pseudo-gradient formed by the difference between old and new global weights.
-
-```
-Δ = wᵍ − Σₖ (nₖ / n) · wₖ
-wᵍ⁺¹ = wᵍ − η · Adam(Δ)
-```
-
-#### FedProx (Li et al., 2018)
-Modifies the local objective to include a proximal regularization term that constrains how far local models drift from the global model, improving stability under system and data heterogeneity.
-
-```
-min hₖ(w) = Fₖ(w) + μ/2 ‖w − wᵍ‖²
-```
-
----
-
-## 🛠️ Training Configuration
-
-| Parameter | Value |
-|-----------|-------|
-| **Input Image Size** | 224 × 224 × 3 |
-| **Batch Size** | 32 |
-| **Local Epochs per Round** | 5 |
-| **Federated Rounds** | 50 |
-| **Learning Rate** | 1e-4 (fine-tuning) |
-| **Optimizer (Client)** | SGD / Adam |
-| **Loss Function** | Categorical Cross-Entropy |
-| **Evaluation Metric** | Top-1 Accuracy, F1-Score |
-| **FedProx μ** | 0.01 |
-| **Number of Clients** | <!-- TODO: Add number of simulated clients --> |
-| **Client Participation Rate** | <!-- TODO: Add participation fraction --> |
-| **Framework** | TensorFlow 2.x / Keras |
-| **Hardware** | <!-- TODO: Add GPU/CPU details --> |
-
----
-
-## 📈 Results
-
-> 📌 **Note:** Results will be populated after the full experiment notebook is committed. See [`notebooks/Crop_Disease_FL.ipynb`](notebooks/Crop_Disease_FL.ipynb).
-
-### Accuracy Comparison (FedAvg vs FedAdam vs FedProx)
-
-<!-- TODO: Replace with actual accuracy graph -->
-```
-📊 [INSERT: images/accuracy.png]
-Training & validation accuracy curves across federated rounds for all three algorithms.
-```
-
-| Algorithm | Test Accuracy | F1-Score (Macro) | Convergence Round |
-|-----------|:------------:|:----------------:|:-----------------:|
-| FedAvg | <!-- TODO --> | <!-- TODO --> | <!-- TODO --> |
-| FedAdam | <!-- TODO --> | <!-- TODO --> | <!-- TODO --> |
-| FedProx | <!-- TODO --> | <!-- TODO --> | <!-- TODO --> |
-
-### Confusion Matrix
-
-<!-- TODO: Replace with actual confusion matrix -->
-```
-📊 [INSERT: images/confusion_matrix.png]
-Per-class confusion matrix showing classification performance across all 38 plant disease categories.
-```
-
-### Classification Report
-
-<!-- TODO: Add per-class precision, recall, F1 from notebook output -->
-
-```
-              precision    recall  f1-score   support
-
-   [class_0]    X.XX       X.XX      X.XX       XXX
-   [class_1]    X.XX       X.XX      X.XX       XXX
-       ...       ...        ...       ...        ...
-
-   accuracy                          X.XX      XXXX
-  macro avg      X.XX       X.XX      X.XX      XXXX
-weighted avg      X.XX       X.XX      X.XX      XXXX
-```
-
-### Dataset Distribution
-
-<!-- TODO: Replace with actual distribution chart -->
-```
-📊 [INSERT: images/dataset_distribution.png]
-Class distribution across PlantVillage categories.
-```
-
----
-
-## 🚀 Future Improvements
-
-The following directions extend this work toward production-grade federated agricultural AI:
-
-| Improvement | Description | Priority |
-|-------------|-------------|----------|
-| 🔐 **Secure Aggregation** | Cryptographic protocols (e.g., SecAgg) to protect client updates from the server | High |
-| 🔏 **Differential Privacy** | Add calibrated noise (DP-SGD) to guarantee formal privacy guarantees | High |
-| 🔄 **FedBN** | Federated batch normalization to handle feature shift across clients | Medium |
-| 🌸 **Flower Framework** | Migrate to the [Flower (flwr)](https://flower.ai/) framework for production-ready FL | Medium |
-| 📱 **Mobile Deployment** | Export model via TFLite for Android/iOS farmer apps | High |
-| 🔌 **Edge Deployment** | Deploy on Raspberry Pi / NVIDIA Jetson for on-farm inference | Medium |
-| 🌐 **Real Data Collection** | Partner with agricultural organizations for authentic, non-simulated federated data | Long-term |
-| 🔬 **EfficientNet / ViT** | Benchmark against EfficientNetV2 or Vision Transformer backbones | Medium |
-| 📡 **Asynchronous FL** | Implement async aggregation to handle stragglers and intermittent connectivity | Medium |
-
----
-
-## 💻 Setup & Installation
+## 💻 Setup & Run Instructions
 
 ### Prerequisites
+*   Python 3.10 or higher
+*   PIP package manager
+*   Jupyter Notebook or JupyterLab
 
-- Python 3.9 or higher
-- pip package manager
-- (Recommended) NVIDIA GPU with CUDA 11.8+ for accelerated training
-
-### Clone the Repository
-
+### 1. Clone the Repository
 ```bash
 git clone https://github.com/AnushkaSarviya/Federated-Learning-Crop-Disease-Detection.git
 cd Federated-Learning-Crop-Disease-Detection
 ```
 
-### Create a Virtual Environment
-
+### 2. Create and Activate a Virtual Environment
 ```bash
 python -m venv venv
 
-# Windows
+# Windows (Command Prompt / PowerShell)
 venv\Scripts\activate
 
 # macOS / Linux
 source venv/bin/activate
 ```
 
-### Install Dependencies
-
+### 3. Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### Download the Dataset
-
-1. Visit [PlantVillage on Kaggle](https://www.kaggle.com/datasets/emmarex/plantdisease)
-2. Download and extract to a `data/` folder in the project root (excluded from git via `.gitignore`)
-
-### Run the Notebook
-
+### 4. Run the Experiments
+Launch the Jupyter Notebook:
 ```bash
 jupyter notebook notebooks/Crop_Disease_FL.ipynb
 ```
+> [!IMPORTANT]
+> The notebook contains Kaggle-specific paths to `/kaggle/input/plant-village-dataset-updated`. If running locally, you must update the input paths in the notebook to point to your local extraction directory of the PlantVillage dataset.
+
+---
+
+## 📄 Research Report
+
+The complete academic project report, detailing the theoretical concepts of Federated Optimization and comparative analyses, is available in the repository at:  
+👉 **[Report/Federated_Learning_Report.pdf](Report/Federated_Learning_Report.pdf)**
+
+---
+
+## ⚠️ Limitations & Technical Debt
+
+*   **Simulation vs. Real Distribution**: The client setup is simulated on a single workstation by programmatically partition-slicing dataset filenames rather than deploying training on physically separated edge devices.
+*   **Aggregator Divergence**: While `fed_adam_aggregate` is defined, the executed federated cells average weights directly (FedAvg). FedProx is not currently coded.
+*   **Differential Privacy**: Theoretical security (Gaussian noise, DP-SGD) is not present in the notebook code.
+*   **Local Paths**: Data loading is tied to Kaggle's local filesystem structure. Running on a new machine requires manual path changes.
+*   **Cleared Outputs**: The notebook's execution logs and graphs were cleared prior to upload. The charts shown in this document are extracted from the research report files.
+
+---
+
+## 🔮 Future Work
+
+*   **Active FedAdam & FedProx Testing**: Call `fed_adam_aggregate` and implement proximal gradient calculations inside Keras custom loops to analyze aggregation under high client skew.
+*   **Differential Privacy Implementation**: Integrate `tensorflow-privacy` or add a manual noise-addition step to client weight updates using Gaussian calibration.
+*   **True Distributed Client Simulation**: Migrate from notebook slices to the **Flower (flwr)** framework to enable RPC-based client-server updates.
+*   **Attention Mechanisms**: Introduce spatial/channel attention layers to the classification head to improve class differentiation for challenging categories like Apple diseases.
 
 ---
 
 ## 📚 References
 
-1. **McMahan, B., Moore, E., Ramage, D., Hampson, S., & y Arcas, B. A. (2017).** Communication-efficient learning of deep networks from decentralized data. *AISTATS 2017*. [arXiv:1602.05629](https://arxiv.org/abs/1602.05629)
-
-2. **Reddi, S., Charles, Z., Zaheer, M., Garrett, Z., Rush, K., Konečný, J., Kumar, S., & McMahan, H. B. (2020).** Adaptive federated optimization. *ICLR 2021*. [arXiv:2003.00295](https://arxiv.org/abs/2003.00295)
-
-3. **Li, T., Sahu, A. K., Zaheer, M., Sanjabi, M., Talwalkar, A., & Smith, V. (2018).** Federated optimization in heterogeneous networks. *MLSys 2020*. [arXiv:1812.06127](https://arxiv.org/abs/1812.06127)
-
-4. **Hughes, D. P., & Salathé, M. (2015).** An open access repository of images on plant health to enable the development of mobile disease diagnostics. [arXiv:1511.08060](https://arxiv.org/abs/1511.08060)
-
-5. **He, K., Zhang, X., Ren, S., & Sun, J. (2016).** Deep residual learning for image recognition. *CVPR 2016*. [arXiv:1512.03385](https://arxiv.org/abs/1512.03385)
-
-6. **Konečný, J., McMahan, H. B., Yu, F. X., Richtárik, P., Suresh, A. T., & Bacon, D. (2016).** Federated learning: Strategies for improving communication efficiency. [arXiv:1610.05492](https://arxiv.org/abs/1610.05492)
-
----
-
-## 📬 Contact
-
-**Anushka Sarviya**  
-Research Intern, MANIT Bhopal  
-[![GitHub](https://img.shields.io/badge/GitHub-AnushkaSarviya-181717?style=flat&logo=github)](https://github.com/AnushkaSarviya)
+1.  **McMahan, B. et al. (2017)**. "Communication-Efficient Learning of Deep Networks from Decentralized Data." *AISTATS 2017*. [arXiv:1602.05629](https://arxiv.org/abs/1602.05629)
+2.  **Reddi, S. et al. (2020)**. "Adaptive Federated Optimization." *ICLR 2021*. [arXiv:2003.00295](https://arxiv.org/abs/2003.00295)
+3.  **Li, T. et al. (2018)**. "Federated Optimization in Heterogeneous Networks." *MLSys 2020*. [arXiv:1812.06127](https://arxiv.org/abs/1812.06127)
+4.  **He, K. et al. (2016)**. "Deep Residual Learning for Image Recognition." *CVPR 2016*. [arXiv:1512.03385](https://arxiv.org/abs/1512.03385)
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
-
----
-
-<div align="center">
-
-**⭐ If this project helped your research, please consider starring the repository.**
-
-*Built with ❤️ during research internship at MANIT Bhopal*
-
-</div>
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

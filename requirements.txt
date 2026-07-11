@@ -1,9 +1,8 @@
-# Core Deep Learning
+# Core Deep Learning & Hub
 tensorflow>=2.13.0
 keras>=2.13.0
-
-# Federated Learning
-tensorflow-federated>=0.63.0
+tensorflow-hub>=0.14.0
+tensorflow-addons>=0.21.0
 
 # Scientific Computing
 numpy>=1.24.0
@@ -37,3 +36,4 @@ h5py>=3.9.0
 
 # Environment
 python-dotenv>=1.0.0
+
